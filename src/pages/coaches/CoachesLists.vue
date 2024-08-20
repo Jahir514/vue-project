@@ -17,7 +17,7 @@
           :key="coach.id"
           :id="coach.id"
           :firstName="coach.firstName"
-          :lastName="coach.firstName"
+          :lastName="coach.lastName"
           :rate="coach.hourlyRate"
           :areas="coach.areas"
         >

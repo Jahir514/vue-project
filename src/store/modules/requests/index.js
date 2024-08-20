@@ -4,7 +4,11 @@ import mutations from './mutations';
 
 export default {
   namespaced: true,
-  states() {},
+  state() {
+    return {
+      requests: [],
+    };
+  },
   mutations,
   actions,
   getters,
