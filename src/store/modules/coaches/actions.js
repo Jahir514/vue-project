@@ -17,12 +17,37 @@ export default {
       }
     );
     const result = await response.json();
-    if (!result.ok) {
-      //
+    if (!result) {
+      const error = new Error(result.message || 'Failed to Store Data');
+      throw error;
     }
     context.commit('registerCoach', {
       ...coachData,
       id: userId,
     });
+  },
+
+  async fetchCoaches(context) {
+    const response = await fetch(
+      'https://coachfind-63e29-default-rtdb.firebaseio.com/coaches.json'
+    );
+    const data = await response.json();
+    if (!data) {
+      const error = new Error(data.message || 'Failed to fetch');
+      throw error;
+    }
+    let coaches = [];
+    for (const key in data) {
+      const coach = {
+        id: key,
+        firstName: data[key].firstName,
+        lastName: data[key].lastName,
+        hourlyRate: data[key].hourlyRate,
+        description: data[key].description,
+        areas: data[key].areas,
+      };
+      coaches.push(coach);
+    }
+    context.commit('setCoaches', coaches);
   },
 };

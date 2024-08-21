@@ -1,17 +1,30 @@
 <template>
+  <!-- '!!' convert an truthy value like string with value to boolean -->
+  <base-dialog
+    :show="!!error"
+    title="An Error occurred!!"
+    @close="errorHandler"
+  >
+    <p>{{ error }}</p>
+  </base-dialog>
   <section>
     <coach-filter @change-filter="setFilters"></coach-filter>
   </section>
   <section>
     <base-card>
       <div class="control">
-        <base-button :link="false" mode="outline">Refresh</base-button>
-        <base-button :link="true" to="/register"
+        <base-button :link="false" mode="outline" @click="getCoaches"
+          >Refresh</base-button
+        >
+        <base-button v-if="!isLoading" :link="true" to="/register"
           >Register as a Coach</base-button
         >
         <!-- link means :link="true" -->
       </div>
-      <ul v-if="hasCoaches">
+      <div v-if="isLoading">
+        <base-spinner></base-spinner>
+      </div>
+      <ul v-else-if="hasCoaches">
         <coach-item
           v-for="coach in filteredCoaches"
           :key="coach.id"
@@ -35,6 +48,8 @@ import BaseButton from '../../components/ui/BaseButton.vue';
 export default {
   data() {
     return {
+      isLoading: false,
+      error: null,
       activeFilters: {
         frontend: true,
         backend: true,
@@ -46,6 +61,9 @@ export default {
     CoachItem,
     BaseButton,
     CoachFilter,
+  },
+  created() {
+    this.getCoaches();
   },
   computed: {
     filteredCoaches() {
@@ -70,6 +88,18 @@ export default {
   methods: {
     setFilters(updatedFilters) {
       this.activeFilters = updatedFilters;
+    },
+    async getCoaches() {
+      this.isLoading = true;
+      try {
+        await this.$store.dispatch('coaches/fetchCoaches');
+      } catch (error) {
+        this.error = error.message || 'Something went wrong';
+      }
+      this.isLoading = false;
+    },
+    errorHandler() {
+      this.error = null;
     },
   },
 };
