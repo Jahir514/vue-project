@@ -1,10 +1,12 @@
 <template>
-  <section>
-    <base-card>
-      <h2>Register a Coach Now!</h2>
-      <coach-form @save-data="saveData"></coach-form>
-    </base-card>
-  </section>
+  <div>
+    <section>
+      <base-card>
+        <h2>Register a Coach Now!</h2>
+        <coach-form @save-data="saveData"></coach-form>
+      </base-card>
+    </section>
+  </div>
 </template>
 <script>
 import CoachForm from '../../components/coaches/CoachForm.vue';
