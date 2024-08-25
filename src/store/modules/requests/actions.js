@@ -33,15 +33,19 @@ export default {
   async fetchRequests(context) {
     //get coach Id from root index
     const coachId = context.rootGetters.userId;
+    const token = context.rootGetters.token;
+    console.log('token', token);
     const response = await fetch(
-      `https://coachfind-63e29-default-rtdb.firebaseio.com/requests/${coachId}.json`
+      `https://coachfind-63e29-default-rtdb.firebaseio.com/requests/${coachId}.json?auth=${token}`
     );
-    const data = await response.json();
+
     //handle error if process failed
     if (!response.ok) {
       const error = new Error(response.message || 'Failed to fetch data');
       throw error;
     }
+    const data = await response.json();
+    console.log('response', data);
     //process request from response of firebase
     const requests = [];
     for (const key in data) {

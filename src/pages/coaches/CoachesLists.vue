@@ -17,7 +17,13 @@
           <base-button :link="false" mode="outline" @click="getCoaches(true)"
             >Refresh</base-button
           >
-          <base-button v-if="!isLoading" :link="true" to="/register"
+          <base-button v-if="!isLoggedIn" link to="/auth"
+            >Login to Register As a Coach</base-button
+          >
+          <base-button
+            v-if="!isLoading && !isCoach && isLoggedIn"
+            :link="true"
+            to="/register"
             >Register as a Coach</base-button
           >
           <!-- link means :link="true" -->
@@ -88,6 +94,12 @@ export default {
     },
     shouldUpdate() {
       return this.$store.getters['coaches/shouldUpdate'];
+    },
+    isCoach() {
+      return this.$store.getters['coaches/isCoach'];
+    },
+    isLoggedIn() {
+      return this.$store.getters.isAuthenticated;
     },
   },
   methods: {

@@ -1,9 +1,16 @@
 <template>
   <div>
-    <base-dialog :show="!!error" title="A Error Occourred!">{{
-      error
-    }}</base-dialog>
-    <base-dialog :show="isLoading" fixed title="Registering...">
+    <base-dialog
+      :show="!!error"
+      title="A Error Occourred!"
+      @close="errorHandler"
+      >{{ error }}</base-dialog
+    >
+    <base-dialog
+      :show="isLoading"
+      fixed
+      :title="mode === 'login' ? 'Logging...' : 'Registering...'"
+    >
       <base-spinner></base-spinner>
     </base-dialog>
     <base-card>
@@ -75,7 +82,17 @@ export default {
       }
       //send http request
       if (this.mode === 'login') {
-        ///
+        this.isLoading = true;
+        try {
+          await this.$store.dispatch('login', {
+            email: this.email,
+            password: this.password,
+          });
+          this.$router.replace('/coaches');
+        } catch (error) {
+          this.error = error.message || 'Failed to Login';
+        }
+        this.isLoading = false;
       } else {
         this.isLoading = true;
         try {
@@ -83,6 +100,7 @@ export default {
             email: this.email,
             password: this.password,
           });
+          this.$router.replace('/coaches');
         } catch (error) {
           this.error = error.message || 'Failed to register';
         }
@@ -95,6 +113,9 @@ export default {
       } else {
         this.mode = 'login';
       }
+    },
+    errorHandler() {
+      this.error = null;
     },
   },
 };

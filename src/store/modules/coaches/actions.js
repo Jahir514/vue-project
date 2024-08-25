@@ -1,6 +1,7 @@
 export default {
   async registerCoach(context, payload) {
     const userId = context.rootGetters.userId;
+    const token = context.rootGetters.token;
     const coachData = {
       firstName: payload.first,
       lastName: payload.last,
@@ -10,17 +11,18 @@ export default {
     };
 
     const response = await fetch(
-      `https://coachfind-63e29-default-rtdb.firebaseio.com/coaches/${userId}.json`,
+      `https://coachfind-63e29-default-rtdb.firebaseio.com/coaches/${userId}.json?auth=` +
+        token,
       {
         method: 'PUT',
         body: JSON.stringify(coachData),
       }
     );
-    const result = await response.json();
-    if (!result) {
-      const error = new Error(result.message || 'Failed to Store Data');
+    if (!response.ok) {
+      const error = new Error(response.message || 'Failed to Store Data');
       throw error;
     }
+    //const result = await response.json();
     context.commit('registerCoach', {
       ...coachData,
       id: userId,
@@ -34,11 +36,12 @@ export default {
     const response = await fetch(
       'https://coachfind-63e29-default-rtdb.firebaseio.com/coaches.json'
     );
-    const data = await response.json();
-    if (!data) {
+    if (!response.ok) {
       const error = new Error(data.message || 'Failed to fetch');
       throw error;
     }
+
+    const data = await response.json();
     let coaches = [];
     for (const key in data) {
       const coach = {

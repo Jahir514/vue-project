@@ -177,7 +177,7 @@ textarea {
   width: 100%;
   border: 1px solid #ccc;
   font: inherit;
-  padding: 5px 0;
+  padding: 5px;
   border-radius: 10px;
 }
 
